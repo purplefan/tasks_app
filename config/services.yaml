@@ -22,3 +22,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\AidevsHttpClient:
+        arguments:
+            $apiToken: '%env(AIDEVS_TOKEN)%'
+
+    App\Config\TaskConfig:
+        arguments:
+            $taskMapping:
+                '01': '@App\Task\Task01'
+                '02': '@App\Task\Task02'
