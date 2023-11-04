@@ -36,13 +36,31 @@ class AidevsHttpClient
         return $contentArray['token'];
     }
     
-    public function retrieveTask(string $taskToken): string
+    public function retrieveTask(string $taskToken): array
     {
         $responseData = $this->client->request(
             'GET',
             sprintf('https://zadania.aidevs.pl/task/%s', $taskToken),
+        );
+
+        $statusCode = $responseData->getStatusCode();
+
+        if ($statusCode != 200) {
+            throw new RuntimeException(sprintf('Client returned error %d', $statusCode));
+        }
+
+        $contentArray = $responseData->toArray();
+
+        return $contentArray;
+    }
+
+    public function retrieveTaskWithParams(string $taskToken, array $taskParams): array
+    {
+        $responseData = $this->client->request(
+            'POST',
+            sprintf('https://zadania.aidevs.pl/task/%s', $taskToken),
             [
-                'json' => ['apikey' => $this->apiToken],
+                'body' => $taskParams,
             ],
         );
 
@@ -54,10 +72,10 @@ class AidevsHttpClient
 
         $contentArray = $responseData->toArray();
 
-        return $contentArray['cookie'];
+        return $contentArray;
     }
     
-    public function sendAnswer(string $token, string $answer): array
+    public function sendAnswer(string $token, string|array $answer): array
     {
         $responsAnswer = $this->client->request(
             'POST',

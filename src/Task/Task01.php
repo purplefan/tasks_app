@@ -21,6 +21,8 @@ class Task01 implements TaskInterface
 
     public function execute(): void
     {
+        $this->logs[] = 'test';
+        
         $taskName = 'helloapi';
         $token = $this->aidevsHttpClient->retrieveToken($taskName);
         $this->logs[] = $token;
@@ -28,7 +30,7 @@ class Task01 implements TaskInterface
         $cookie = $this->aidevsHttpClient->retrieveTask($token);
         $this->logs[] = $cookie;
 
-        $responseAnswer = $this->aidevsHttpClient->sendAnswer($token, $cookie);
+        $responseAnswer = $this->aidevsHttpClient->sendAnswer($token, $cookie['cookie']);
         $this->logs[] = $responseAnswer;
     }
     

@@ -4,10 +4,11 @@ namespace App\Task;
 
 use App\Service\AidevsHttpClient;
 use App\Service\OpenAiClient;
+use App\Service\OpenAiRequest\ChatRequest;
 
-class Task02 implements TaskInterface
+class Task04 implements TaskInterface
 {
-    private string $taskName = 'moderation';
+    private string $taskName = 'liar';
     private array $logs = [];
 
     public function __construct(
@@ -26,16 +27,28 @@ class Task02 implements TaskInterface
                
         $token = $this->aidevsHttpClient->retrieveToken($this->taskName);
         $this->logs[] = ['token' => $token];
-        
-        $task = $this->aidevsHttpClient->retrieveTask($token);
+
+        $question = 'What is the name of the president of USA';
+
+        $params = ['question' => $question];
+        $task = $this->aidevsHttpClient->retrieveTaskWithParams($token, $params);
         $this->logs[] = ['task' => $task];
 
-        $moderationResults = $this->openAiClient->moderations($task['input']);
-        //$this->logs[] = ['moderations'=> $moderationResults];
-        $answerArray = [];
-        foreach ($moderationResults as $moderationResult) {
-            $answerArray[] = (int)$moderationResult['flagged'];
-        }
+        //guardrails
+        $testedAnswer = $task['answer'];
+        $testedStatement = sprintf('For question: "%s" is the answer this: "%s"', $question, $testedAnswer);
+        $test = $this->openAiClient->chatCompletions(
+            [
+                new ChatRequest('system','Answer only YES or NO'),
+                new ChatRequest('user', $testedStatement),
+            ],
+        );
+
+        $this->logs[] = $test;
+
+
+        $answerArray = $answerArray[] = $test[0]['message']['content'];;
+        
         $this->logs[] = ['_answers_'=> $answerArray];
 
 

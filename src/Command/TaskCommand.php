@@ -51,8 +51,9 @@ class TaskCommand extends Command
             $io->info($task->taskName());
             $task->execute();
             $io->info($task->logs());
-        } catch (\Exception) {
-            throw new RuntimeException('Can\'t find task class');
+        } catch (\Exception $e) {
+            $io->error($e->getMessage());
+            throw $e;
         }
         
         $io->success('task completed');

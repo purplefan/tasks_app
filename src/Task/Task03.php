@@ -4,10 +4,11 @@ namespace App\Task;
 
 use App\Service\AidevsHttpClient;
 use App\Service\OpenAiClient;
+use App\Service\OpenAiRequest\ChatRequest;
 
-class Task02 implements TaskInterface
+class Task03 implements TaskInterface
 {
-    private string $taskName = 'moderation';
+    private string $taskName = 'blogger';
     private array $logs = [];
 
     public function __construct(
@@ -30,14 +31,26 @@ class Task02 implements TaskInterface
         $task = $this->aidevsHttpClient->retrieveTask($token);
         $this->logs[] = ['task' => $task];
 
-        $moderationResults = $this->openAiClient->moderations($task['input']);
-        //$this->logs[] = ['moderations'=> $moderationResults];
         $answerArray = [];
-        foreach ($moderationResults as $moderationResult) {
-            $answerArray[] = (int)$moderationResult['flagged'];
+        foreach ($task['blog'] as $input) {
+            $this->logs[] = ['_input_'=> $input];
+            
+            $chatCompletion = $this->openAiClient->chatCompletions(
+                [
+                    new ChatRequest('user', $input),
+                ],
+            );
+
+            //$this->logs[] = ['_result_'=> $chatCompletion];
+            $answerArray[] = $chatCompletion[0]['message']['content'];
         }
+        
         $this->logs[] = ['_answers_'=> $answerArray];
 
+        // due to timeout retrieve new token
+        $token = $this->aidevsHttpClient->retrieveToken($this->taskName);
+        $this->logs[] = ['token' => $token];
+        $task = $this->aidevsHttpClient->retrieveTask($token);
 
         $responseAnswer = $this->aidevsHttpClient->sendAnswer($token, $answerArray);
         $this->logs[] = $responseAnswer;

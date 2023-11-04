@@ -27,8 +27,16 @@ services:
         arguments:
             $apiToken: '%env(AIDEVS_TOKEN)%'
 
+    App\Service\OpenAiClient:
+        arguments:
+            $apiToken: '%env(OPENAI_TOKEN)%'
+
     App\Config\TaskConfig:
         arguments:
             $taskMapping:
                 '01': '@App\Task\Task01'
                 '02': '@App\Task\Task02'
+                '03': '@App\Task\Task03'
+                '04': '@App\Task\Task04'
+                '99': '@App\Task\Task99'
+            
