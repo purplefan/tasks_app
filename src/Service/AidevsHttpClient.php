@@ -77,7 +77,7 @@ class AidevsHttpClient
     
     public function sendAnswer(string $token, string|array $answer): array
     {
-        $responsAnswer = $this->client->request(
+        $responseAnswer = $this->client->request(
             'POST',
             sprintf('https://zadania.aidevs.pl/answer/%s', $token),
             [
@@ -85,13 +85,14 @@ class AidevsHttpClient
             ],
         );
 
-        $statusCode = $responsAnswer->getStatusCode();
+        $statusCode = $responseAnswer->getStatusCode();
+        
 
         if ($statusCode != 200) {
-            throw new RuntimeException(sprintf('Client returned error %d', $statusCode));
+            //throw new RuntimeException(sprintf('Client returned error %d', $statusCode));
         }
 
-        $contentArray = $responsAnswer->toArray();
+        $contentArray = $responseAnswer->toArray(false);
 
         return $contentArray;
     }

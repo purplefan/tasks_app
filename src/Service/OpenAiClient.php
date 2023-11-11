@@ -20,7 +20,7 @@ class OpenAiClient
     /**
      * @var ChatRequest[] $chatRequests
      */
-    public function chatCompletions(array $chatRequests): array
+    public function chatCompletions(array $chatRequests, OpenAiModel $openAiModel = OpenAiModel::GPT_35_TURBO): array
     {
         $messages = [];
         foreach ($chatRequests as $chatRequest) {
@@ -28,8 +28,7 @@ class OpenAiClient
         }
 
         $result = $this->openAiClient->chat()->create([
-            'model' => 'gpt-3.5-turbo',
-            //'model' => 'gpt-4',
+            'model' => $openAiModel->value,
             'messages' => $messages,
         ]);
 
@@ -44,5 +43,16 @@ class OpenAiClient
         ]);
 
         return $result['results'];
+    }
+
+    public function embeddings(string $input): array
+    {
+        
+        $result = $this->openAiClient->embeddings()->create([
+            'input' => $input,
+            'model' => OpenAiModel::TEXT_EMBEDDING->value,
+        ]);
+
+        return $result['data'][0]['embedding'];
     }
 }

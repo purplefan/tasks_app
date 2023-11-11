@@ -34,9 +34,12 @@ services:
     App\Config\TaskConfig:
         arguments:
             $taskMapping:
-                '01': '@App\Task\Task01'
-                '02': '@App\Task\Task02'
-                '03': '@App\Task\Task03'
-                '04': '@App\Task\Task04'
-                '99': '@App\Task\Task99'
+                'helloapi': '@App\Task\Task01'
+                'moderation': '@App\Task\Task02'
+                'blogger': '@App\Task\Task03'
+                'liar': '@App\Task\Task04'
+                'inprompt': '@App\Task\Task05'
+                'embedding': '@App\Task\Task06'
+                'functions': '@App\Task\Task07'
+                'rodo': '@App\Task\Task08'
             
