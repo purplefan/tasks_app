@@ -8,6 +8,8 @@ use App\Service\OpenAiRequest\ChatRequest;
 
 class Task04 implements TaskInterface
 {
+    use TaskTrait;
+
     private string $taskName = 'liar';
     private array $logs = [];
 
@@ -15,11 +17,6 @@ class Task04 implements TaskInterface
         private readonly AidevsHttpClient $aidevsHttpClient,
         private readonly OpenAiClient $openAiClient,
     ) {
-    }
-    
-    public function taskName(): string
-    {
-        return $this->taskName;
     }
 
     public function execute(): void
@@ -54,10 +51,5 @@ class Task04 implements TaskInterface
 
         $responseAnswer = $this->aidevsHttpClient->sendAnswer($token, $answerArray);
         $this->logs[] = $responseAnswer;
-    }
-    
-    public function logs(): string
-    {
-        return json_encode($this->logs, JSON_PRETTY_PRINT);
     }
 }

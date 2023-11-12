@@ -6,6 +6,8 @@ use App\Service\AidevsHttpClient;
 
 class Task01 implements TaskInterface
 {
+    use TaskTrait;
+    
     public function __construct(private readonly AidevsHttpClient $aidevsHttpClient)
     {
     }
@@ -13,11 +15,6 @@ class Task01 implements TaskInterface
     private $taskName = 'helloapi';
     
     private $logs = [];
-    
-    public function taskName(): string
-    {
-        return $this->taskName;
-    }
 
     public function execute(): void
     {
@@ -32,10 +29,5 @@ class Task01 implements TaskInterface
 
         $responseAnswer = $this->aidevsHttpClient->sendAnswer($token, $cookie['cookie']);
         $this->logs[] = $responseAnswer;
-    }
-    
-    public function logs(): string
-    {
-        return json_encode($this->logs);
     }
 }
